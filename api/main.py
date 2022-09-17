@@ -28,8 +28,10 @@ def read_root():
 @app.post("/user/create")
 def create_user(user: User, db: Session = Depends(get_db)):
     """Collect data to create a user"""
-    crud.create_user(Depends(get_db), user)
-    return {"new_user_id": user.user_id}
+    # rv for return value from the crud operation
+    rv = crud.create_user(db, user)
+    return rv
+
 
 @app.get("/user/{user_id}")
 def get_user_info(user_id: int, db: Session = Depends(get_db)):
