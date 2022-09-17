@@ -19,7 +19,6 @@ def get_db():
         db.close()
 
 
-
 @app.get("/")
 def read_root():
     return {"Hello": "World"}
