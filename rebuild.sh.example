@@ -1,0 +1,14 @@
+#!/bin/bash
+git pull
+#docker stop cyclopedia_api_dev
+docker build --build-arg sql_host= \
+--build-arg sql_port= \
+--build-arg sql_user= \
+--build-arg sql_pass= \
+--build-arg sql_db= \
+--build-arg host= \
+--build-arg domain= \
+-t cyclopedia_api:dev \
+.
+#docker run -d --rm --name cyclopedia_api_dev cyclopedia_api:dev
+

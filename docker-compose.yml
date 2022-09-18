@@ -1,0 +1,10 @@
+version: '3'
+
+services:
+  cyclopedia-dev:
+    image: cyclopedia_api:dev
+    networks:
+      - traefik_default
+networks:
+  traefik_default:
+    external: true
