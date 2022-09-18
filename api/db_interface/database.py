@@ -1,5 +1,8 @@
 import os
-from . import temp_configs
+try:
+    from . import temp_configs
+except ImportError:
+    pass
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
