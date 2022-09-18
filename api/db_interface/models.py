@@ -40,10 +40,17 @@ class Journey(Base):
     __tablename__ = "JOURNEY"
 
     journey_id = Column(Integer, primary_key=True)
-    latitude = Column(String)
-    longitude = Column(String)
-    altitude = Column(String)
-    timestamp = Column(String, server_default=FetchedValue())
     journey_start_time = Column(String)
     journey_end_time = Column(String)
+    user_id = Column(Integer, ForeignKey("USER_INFO.user_id"))
 
+
+class JourneyPoint(Base):
+    __tablename__ = "JOURNEY_POINT"
+
+    point_id = Column(Integer, primary_key=True)
+    latitude = Column(String)
+    longitude = Column(String)
+    timestamp = Column(String)
+    altitude = Column(String)
+    journey_id = Column(Integer, ForeignKey("JOURNEY.journey_id"))
