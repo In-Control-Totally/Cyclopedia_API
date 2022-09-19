@@ -54,3 +54,8 @@ def create_poi_def(poi_data: POIDef, db: Session = Depends(get_db)):
 @app.post("/poi/create")
 def create_poi_actual(poi_actual: POIActual, db: Session = Depends(get_db)):
     return crud.create_poi(db, poi_actual)
+
+
+@app.get("/poi/list")
+def list_all_poi(db: Session = Depends(get_db)):
+    return crud.list_all_poi(db)

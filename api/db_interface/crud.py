@@ -17,9 +17,7 @@ def get_user(db: Session, user_id: int):
 
 
 def get_all_poi_def(db: Session):
-
     result = db.query(models.POIType).all()
-    # print(len(result))
     return result
 
 
@@ -45,3 +43,7 @@ def create_poi(db: Session, poi_actual_info: poiactual):
     db.commit()
     db.refresh(poi_act)
     return poi_act
+
+
+def list_all_poi(db: Session):
+    return db.query(models.POI).all()
