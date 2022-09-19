@@ -1,7 +1,7 @@
 from sqlalchemy.orm import Session
 
 from . import models
-from . import user, poi
+from . import user, poidef
 
 
 def create_user(db: Session, user_int: user):
@@ -23,11 +23,11 @@ def get_all_poi_def(db: Session):
     return result
 
 
-def create_poi_type(db: Session, poi_data: poi):
-    poi_actual = models.POIType(poi_type_name=poi_data.poi_type,
-                                poi_type_description=poi_data.poi_desc
-                                )
-    db.add(poi_actual)
+def create_poi_type(db: Session, poi_data: poidef):
+    poi_definition = models.POIType(poi_type_name=poi_data.poi_type,
+                                    poi_type_description=poi_data.poi_desc
+                                    )
+    db.add(poi_definition)
     db.commit()
-    db.refresh(poi_actual)
-    return poi_actual
+    db.refresh(poi_definition)
+    return poi_definition

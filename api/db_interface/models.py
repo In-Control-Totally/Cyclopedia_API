@@ -29,6 +29,7 @@ class POI(Base):
     __tablename__ = "POINT_OF_INTEREST"
 
     poi_id = Column(Integer, primary_key=True)
+    poi_type_id = Column(Integer)
     latitude = Column(String)
     longitude = Column(String)
     altitude = Column(String)

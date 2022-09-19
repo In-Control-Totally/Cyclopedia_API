@@ -3,7 +3,7 @@ from fastapi import FastAPI, Depends
 from db_interface.user import User
 from db_interface.database import SessionLocal, engine
 from db_interface import models, crud
-from db_interface.poi import POI
+from db_interface.poidef import POIDef
 
 from sqlalchemy.orm import Session
 
@@ -45,6 +45,6 @@ def get_all_poi_def(db: Session = Depends(get_db)):
 
 
 @app.post("/poi/create_def")
-def create_poi_def(poi_data: POI, db: Session = Depends(get_db)):
+def create_poi_def(poi_data: POIDef, db: Session = Depends(get_db)):
     return crud.create_poi_type(db, poi_data)
     # return poi_data

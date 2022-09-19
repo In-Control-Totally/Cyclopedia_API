@@ -4,7 +4,7 @@ from fastapi import FastAPI
 from pydantic import BaseModel
 
 
-class POI(BaseModel):
+class POIDef(BaseModel):
     poi_type: str
     poi_desc: str
     poi_id: int = None
