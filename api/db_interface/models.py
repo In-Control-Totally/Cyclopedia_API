@@ -22,7 +22,7 @@ class POIType(Base):
 
     poi_type_id = Column(Integer, primary_key=True)
     poi_type_name = Column(String)
-    pot_type_description = Column(String)
+    poi_type_description = Column(String)
 
 
 class POI(Base):

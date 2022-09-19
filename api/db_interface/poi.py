@@ -4,11 +4,10 @@ from fastapi import FastAPI
 from pydantic import BaseModel
 
 
-class User(BaseModel):
-    f_name: str
-    l_name: str
-    email: str
-    user_id: int = None
+class POI(BaseModel):
+    poi_type: str
+    poi_desc: str
+    poi_id: int = None
 
     class Config:
         orm_mode = True

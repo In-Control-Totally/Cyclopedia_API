@@ -3,6 +3,7 @@ from fastapi import FastAPI, Depends
 from db_interface.user import User
 from db_interface.database import SessionLocal, engine
 from db_interface import models, crud
+from db_interface.poi import POI
 
 from sqlalchemy.orm import Session
 
@@ -36,3 +37,14 @@ def create_user(user: User, db: Session = Depends(get_db)):
 def get_user_info(user_id: int, db: Session = Depends(get_db)):
     db_user = crud.get_user(db, user_id=user_id)
     return db_user
+
+
+@app.get("/poi/show_all_types")
+def get_all_poi_def(db: Session = Depends(get_db)):
+    return crud.get_all_poi_def(db)
+
+
+@app.post("/poi/create_def")
+def create_poi_def(poi_data: POI, db: Session = Depends(get_db)):
+    return crud.create_poi_type(db, poi_data)
+    # return poi_data
