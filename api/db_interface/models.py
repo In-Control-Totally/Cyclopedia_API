@@ -29,7 +29,7 @@ class POI(Base):
     __tablename__ = "POINT_OF_INTEREST"
 
     poi_id = Column(Integer, primary_key=True)
-    poi_type_id = Column(Integer)
+    poi_type_id = Column(Integer, ForeignKey("POINT_OF_INTEREST_TYPE.poi_type_id"))
     latitude = Column(String)
     longitude = Column(String)
     altitude = Column(String)
