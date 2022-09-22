@@ -5,6 +5,11 @@ services:
     image: cyclopedia_api:dev
     networks:
       - traefik_default
+    hostname: cyclopedia-dev
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.cyclopedia-api.entrypoints=http
+      - traefik.http.routers.cyclopedia-api.rule=Host(`${HOST}.${DOMAIN}`)
 networks:
   traefik_default:
     external: true

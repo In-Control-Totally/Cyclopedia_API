@@ -9,15 +9,10 @@ ARG sql_pass=None
 ENV sql_pass=$sql_pass
 ARG sql_db=None
 ENV sql_db=$sql_db
-ARG host=None
-ARG domain=None
 
 
 WORKDIR /app
 
-LABEL traefik.enable=true
-LABEL traefik.http.routers.cyclopedia-api.entrypoints=http
-LABEL traefik.http.routers.cyclopedia-api.rule=Host(`$host.$domain`)
 
 
 COPY requirements.txt requirements.txt
