@@ -5,11 +5,15 @@ services:
     image: cyclopedia_api:dev
     networks:
       - traefik_default
-    hostname: cyclopedia-dev
     labels:
       - traefik.enable=true
       - traefik.http.routers.cyclopedia-api.entrypoints=http
       - traefik.http.routers.cyclopedia-api.rule=Host(`${HOST}.${DOMAIN}`)
+      - traefik.http.routers.cyclopedia-api.middlewares=cyclopedia-api-secure
+      - traefik.http.middlewares.cyclopedia-api-secure.redirectscheme.scheme=https
+      - traefik.http.routers.cyclopedia-api-secure.entrypoints=https
+      - traefik.http.routers.cyclopedia-api-secure.rule=Host(`${HOST}.${DOMAIN}`)
+      - traefik.http.routers.cyclopedia-api-secure.tls.certresolver=letsencrypt
 networks:
   traefik_default:
     external: true
