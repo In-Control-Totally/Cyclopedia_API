@@ -1,3 +1,4 @@
+from datetime import datetime
 from pydantic import BaseModel
 
 
@@ -7,8 +8,7 @@ class POIActual(BaseModel):
     latitude: float
     longitude: float
     altitude: int
-    # TODO: transmit timestamp of transaction
-    timestamp: int = 1
+    timestamp: int = int(datetime.timestamp())
     comments: str
     poi_type_id: int
 
