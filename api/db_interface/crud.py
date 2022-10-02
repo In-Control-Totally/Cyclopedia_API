@@ -1,7 +1,7 @@
 from sqlalchemy.orm import Session
 
 from . import models
-from . import user, poidef, poiactual
+from . import user, poidef, poiactual, journey
 
 
 def create_user(db: Session, user_int: user):
@@ -47,3 +47,23 @@ def create_poi(db: Session, poi_actual_info: poiactual):
 
 def list_all_poi(db: Session):
     return db.query(models.POI).all()
+
+
+def create_journey(db: Session, new_journey: journey.JourneyUpload):
+    journey_master = models.Journey(journey_start_time=new_journey.journey.journey_start_time,
+                                    journey_end_time=new_journey.journey.journey_end_time,
+                                    user_id=new_journey.journey.user_id
+                                    )
+    db.add(journey_master)
+    db.commit()
+    db.refresh(journey_master)
+    for point in new_journey.points:
+        new_point = models.JourneyPoint(journey_id=journey_master.journey_id,
+                                        latitude=point.latitude,
+                                        longitude=point.longitude,
+                                        timestamp=point.timestamp,
+                                        altitude=point.altitude
+                                        )
+        db.add(new_point)
+    db.commit()
+    return journey_master

@@ -3,6 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from db_interface.user import User
 from db_interface.database import SessionLocal, engine
+from db_interface.journey import JourneyUpload
 from db_interface import models, crud
 from db_interface.poidef import POIDef
 from db_interface.poiactual import POIActual
@@ -24,6 +25,7 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
 
 def get_db():
     db = SessionLocal()
@@ -71,3 +73,8 @@ def create_poi_actual(poi_actual: POIActual, db: Session = Depends(get_db)):
 @app.get("/poi/list")
 def list_all_poi(db: Session = Depends(get_db)):
     return crud.list_all_poi(db)
+
+
+@app.post("/journey/create")
+def create_journey(journey: JourneyUpload, db: Session = Depends(get_db)):
+    return crud.create_journey(db, journey)

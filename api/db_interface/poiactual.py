@@ -8,7 +8,7 @@ class POIActual(BaseModel):
     latitude: float
     longitude: float
     altitude: int
-    timestamp: int = int(datetime.timestamp())
+    timestamp: int = int(datetime.timestamp(datetime.now()))
     comments: str
     poi_type_id: int
 
