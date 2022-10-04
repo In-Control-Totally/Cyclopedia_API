@@ -37,12 +37,13 @@ def get_db():
 
 @app.get("/")
 def read_root():
+    """This is a simple return to test that the API is available."""
     return {"Hello": "World"}
 
 
 @app.post("/user/create")
 def create_user(user: User, db: Session = Depends(get_db)):
-    """Collect data to create a user"""
+    """Mandatory parameters are f_name, l_name and email.  user_id is created automatically."""
     # rv for return value from the crud operation
     rv = crud.create_user(db, user)
     return rv
@@ -61,12 +62,21 @@ def get_all_poi_def(db: Session = Depends(get_db)):
 
 @app.post("/poi/create_def")
 def create_poi_def(poi_data: POIDef, db: Session = Depends(get_db)):
+    """poi_type_id will be created automatically.  The only required parameters are poi_type and poi_desc.
+
+    poi_type is a short name while poi_desc is a longer description of thje point of interest
+    """
     return crud.create_poi_type(db, poi_data)
-    # return poi_data
 
 
 @app.post("/poi/create")
 def create_poi_actual(poi_actual: POIActual, db: Session = Depends(get_db)):
+    """When creating a POI, the poi_type_id must relate to a poi_type_id the system knows about.
+
+    Send a GET request to /poi/show_all_types to get the list of Point Of Interest Type definitions.
+
+    Dont supply a poi_id, one will be created for you when the poi is created
+    """
     return crud.create_poi(db, poi_actual)
 
 
@@ -77,4 +87,5 @@ def list_all_poi(db: Session = Depends(get_db)):
 
 @app.post("/journey/create")
 def create_journey(journey: JourneyUpload, db: Session = Depends(get_db)):
+    """Do not supply a journey ID or a point ID when creating a journey.  The system will create these automatically"""
     return crud.create_journey(db, journey)
