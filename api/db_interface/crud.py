@@ -71,16 +71,30 @@ def create_journey(db: Session, new_journey: journey.JourneyUpload):
 
 
 def get_journey_by_id(db: Session, journey_id: int):
+    """Instantiate a bunch of pydantic objects and then wrap them up into the master JourneyRecall object"""
+    # Get the journey by its ID number from the Journey table.
     newjourney = db.query(models.Journey).filter(models.Journey.journey_id == journey_id).first()
+    # Migrate the query object into the pydantic model.  the from_orm is the key part
     journey_data = journey.Journey.from_orm(newjourney)
+    # Using the Journey ID, get all the data from the DB relating to the specific journey
     journey_points_db = db.query(models.JourneyPoint).filter(models.JourneyPoint.journey_id == journey_id).all()
+    # Create a linestring object
     points = geojson.LineString()
+    # The journey_points_db object returns lat, lon, altitude, timestamp.
+    # We only need long and lat.  Iterate over each record returned and return a list of lists containing lat lon.
+    # It will look like [[153.05, 27.45], [153.12, 27.35]]
+    # Assign it to the coordinates attribute of the points object
     points.coordinates = [[point.longitude, point.latitude] for point in journey_points_db].copy()
+    # An experiment.  I was not entirely sure what I was up to here.
+    # Basically create the features object and add the points to it.
     features = geojson.Features(geometry=points)
-    # features.geometry = points.copy()
+    # Create the location object and add the features to it.  Features now includes points
     location = geojson.Location()
     location.features = features
+    # Get the user data for the user who created the journey.
     usr = get_user(db, journey_data.user_id)
+    # Create the JourneyRecall object that will be returned at the endpoint.
+    # add the location, start, end, and user objects to it
     journey_recall = journey.JourneyRecall()
     journey_recall.journey_end_time = journey_data.journey_end_time
     journey_recall.journey_start_time = journey_data.journey_start_time
