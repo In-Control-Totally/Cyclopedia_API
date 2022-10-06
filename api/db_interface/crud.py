@@ -1,7 +1,8 @@
 from sqlalchemy.orm import Session
+from sqlalchemy import select
 
 from . import models
-from . import user, poidef, poiactual, journey
+from . import user, poidef, poiactual, journey, geojson
 
 
 def create_user(db: Session, user_int: user):
@@ -67,3 +68,22 @@ def create_journey(db: Session, new_journey: journey.JourneyUpload):
         db.add(new_point)
     db.commit()
     return journey_master
+
+
+def get_journey_by_id(db: Session, journey_id: int):
+    newjourney = db.query(models.Journey).filter(models.Journey.journey_id == journey_id).first()
+    journey_data = journey.Journey.from_orm(newjourney)
+    journey_points_db = db.query(models.JourneyPoint).filter(models.JourneyPoint.journey_id == journey_id).all()
+    points = geojson.LineString()
+    points.coordinates = [[point.longitude, point.latitude] for point in journey_points_db].copy()
+    features = geojson.Features(geometry=points)
+    # features.geometry = points.copy()
+    location = geojson.Location()
+    location.features = features
+    usr = get_user(db, journey_data.user_id)
+    journey_recall = journey.JourneyRecall()
+    journey_recall.journey_end_time = journey_data.journey_end_time
+    journey_recall.journey_start_time = journey_data.journey_start_time
+    journey_recall.location = location
+    journey_recall.user = usr
+    return journey_recall

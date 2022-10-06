@@ -4,6 +4,9 @@ from typing import List
 from fastapi import FastAPI
 from pydantic import BaseModel
 
+from .user import User
+from .geojson import Location
+
 
 class Journey(BaseModel):
     journey_id: int = None
@@ -30,3 +33,16 @@ class JourneyPoint(BaseModel):
 class JourneyUpload(BaseModel):
     journey: Journey
     points: List[JourneyPoint]
+
+    class Config:
+        orm_mode = True
+
+
+class JourneyRecall(BaseModel):
+    user: User = None
+    location: Location = Location()
+    journey_start_time: int = 0
+    journey_end_time: int = 0
+
+    class Config:
+        orm_mode = True

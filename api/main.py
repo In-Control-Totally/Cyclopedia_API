@@ -15,12 +15,13 @@ models.Base.metadata.create_all(bind=engine)
 app = FastAPI()
 
 origins = ["http://localhost",
-           "http://127.0.0.1"
+           "http://127.0.0.1:51405"
            ]
 
 app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,
+    allow_origin_regex="https://.*\.cyclopedia\.goldenrivet\.xyz",
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -89,3 +90,9 @@ def list_all_poi(db: Session = Depends(get_db)):
 def create_journey(journey: JourneyUpload, db: Session = Depends(get_db)):
     """Do not supply a journey ID or a point ID when creating a journey.  The system will create these automatically"""
     return crud.create_journey(db, journey)
+
+
+@app.get("/journey/{journey_id}")
+def get_specific_journey(journey_id: int, db: Session = Depends(get_db)):
+    """Pass a specific journey_id number to get the datapoints returned in GEOJSON"""
+    return crud.get_journey_by_id(db, journey_id)
