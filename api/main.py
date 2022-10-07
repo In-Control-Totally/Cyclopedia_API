@@ -102,3 +102,12 @@ def get_specific_journey(journey_id: int, db: Session = Depends(get_db)):
 def get_all_journeys(db: Session = Depends(get_db)):
     """Return a list of all valid journey IDs"""
     return crud.get_all_journeys(db)
+
+
+@app.post("/track/savejourney/")
+def save_journey_as_track(journey_id: int, name: str, rating: int, comments: str, db: Session = Depends(get_db)):
+    """Pass an existing Journey_ID in, with a name, rating and comments to save as a track
+
+    TODO: Fix so that a journey can only be added once.
+    """
+    return crud.save_journey_as_track(db, journey_id, name, rating, comments)

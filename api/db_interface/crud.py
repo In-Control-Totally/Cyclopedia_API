@@ -106,3 +106,27 @@ def get_journey_by_id(db: Session, journey_id: int):
 def get_all_journeys(db: Session):
     """Return a list of Journey IDs"""
     return [key["journey_id"] for key in db.query(models.Journey.journey_id).all()]
+
+
+def save_journey_as_track(db: Session, journey_id: int, trackname: str, rating: int, comments: str):
+    saved_journey = get_journey_by_id(db, journey_id)
+    new_track = models.TrackName(track_name=trackname)
+    db.add(new_track)
+    db.commit()
+    db.refresh(new_track)
+    for long, lat in saved_journey.location.features.geometry.coordinates:
+        point = models.TrackData(track_id=new_track.track_id,
+                                 latitude=lat,
+                                 longitude=long,
+                                 altitude=0,
+                                 timestamp=0
+                                 )
+        db.add(point)
+    db.commit()
+    new_rating = models.TrackRating(rating=rating,
+                                    comments=comments,
+                                    track_id=new_track.track_id,
+                                    user_id=saved_journey.user.user_id
+                                    )
+    db.add(new_rating)
+    db.commit()
