@@ -21,7 +21,7 @@ origins = ["http://localhost",
 app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,
-    allow_origin_regex="https://.*\.cyclopedia\.goldenrivet\.xyz",
+    allow_origin_regex=r"https://.*\.cyclopedia\.goldenrivet\.xyz",
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
