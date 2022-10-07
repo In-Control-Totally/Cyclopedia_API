@@ -15,7 +15,7 @@ models.Base.metadata.create_all(bind=engine)
 app = FastAPI()
 
 origins = ["http://localhost",
-           "http://127.0.0.1:51405"
+           "http://127.0.0.1:53657"
            ]
 
 app.add_middleware(
@@ -96,3 +96,9 @@ def create_journey(journey: JourneyUpload, db: Session = Depends(get_db)):
 def get_specific_journey(journey_id: int, db: Session = Depends(get_db)):
     """Pass a specific journey_id number to get the datapoints returned in GEOJSON"""
     return crud.get_journey_by_id(db, journey_id)
+
+
+@app.get("/journey/list/")
+def get_all_journeys(db: Session = Depends(get_db)):
+    """Return a list of all valid journey IDs"""
+    return crud.get_all_journeys(db)

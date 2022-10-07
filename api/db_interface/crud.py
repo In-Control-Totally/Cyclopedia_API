@@ -101,3 +101,8 @@ def get_journey_by_id(db: Session, journey_id: int):
     journey_recall.location = location
     journey_recall.user = usr
     return journey_recall
+
+
+def get_all_journeys(db: Session):
+    """Return a list of Journey IDs"""
+    return [key["journey_id"] for key in db.query(models.Journey.journey_id).all()]

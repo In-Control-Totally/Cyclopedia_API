@@ -41,8 +41,8 @@ class Journey(Base):
     __tablename__ = "JOURNEY"
 
     journey_id = Column(Integer, primary_key=True)
-    journey_start_time = Column(String)
-    journey_end_time = Column(String)
+    journey_start_time = Column(Integer)
+    journey_end_time = Column(Integer)
     user_id = Column(Integer, ForeignKey("USER_INFO.user_id"))
 
 
