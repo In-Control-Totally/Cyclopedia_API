@@ -130,3 +130,7 @@ def save_journey_as_track(db: Session, journey_id: int, trackname: str, rating: 
                                     )
     db.add(new_rating)
     db.commit()
+
+
+def get_all_tracks(db):
+    return [key["track_id"] for key in db.query(models.TrackName.track_id).all()]
