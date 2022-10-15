@@ -117,3 +117,9 @@ def save_journey_as_track(journey_id: int, name: str, rating: int, comments: str
 def get_all_tracks(db: Session = Depends(get_db)):
     """Return a list of valid track IDs"""
     return crud.get_all_tracks(db)
+
+
+@app.post("/track/bylocation/")
+def get_tracks_in_area(lat: float, lon: float, db: Session = Depends(get_db)):
+    """Returns a tracks within a point within a given area in a geoJSON format"""
+    return crud.get_tracks_in_area(db, lat, lon)

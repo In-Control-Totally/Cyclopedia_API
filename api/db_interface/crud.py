@@ -134,3 +134,20 @@ def save_journey_as_track(db: Session, journey_id: int, trackname: str, rating: 
 
 def get_all_tracks(db):
     return [key["track_id"] for key in db.query(models.TrackName.track_id).all()]
+
+
+def get_tracks_in_area(db, latitude: float, longitude: float):
+    """TODO: The title of this is for tracks, but it is currently set to get journeys just to get a bunch of data out.
+             This is a bad idea.
+             Fix this.
+    """
+    # First, identify all track_id's with a point +- 0.1 of a degree in lat/lon from the datum
+    # 0.1 of a degree gives us a window of 22.2km in lat and lon to view on the map.
+    track_ids = [key["journey_id"] for key in db.query(models.JourneyPoint.journey_id)
+        .filter(models.JourneyPoint.latitude.between(latitude - 0.1, latitude + 0.1))
+        .filter(models.JourneyPoint.longitude.between(longitude - 0.1, longitude + 0.1))
+        .distinct()]
+    # For all track_ids identified, get the geoJSON object and return it.
+    # Leveraging the journey code from earlier.
+    return_list = [get_journey_by_id(db, x) for x in track_ids]
+    return return_list
