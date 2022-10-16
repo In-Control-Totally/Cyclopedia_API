@@ -151,3 +151,10 @@ def get_tracks_in_area(db, latitude: float, longitude: float):
     # Leveraging the journey code from earlier.
     return_list = [get_journey_by_id(db, x) for x in track_ids]
     return return_list
+
+
+def get_all_poi_in_area(db, latitude: float, longitude: float):
+    return db.query(models.POI)\
+        .filter(models.POI.latitude.between(latitude - 0.1, latitude + 0.1)) \
+        .filter(models.POI.longitude.between(longitude - 0.1, longitude + 0.1)) \
+        .all()

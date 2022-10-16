@@ -86,6 +86,12 @@ def list_all_poi(db: Session = Depends(get_db)):
     return crud.list_all_poi(db)
 
 
+@app.post("/poi/bylocation")
+def get_all_poi_in_area(lat: float, lon: float, db: Session = Depends(get_db)):
+    """Returns a list of points of interest within 11km of the supplied point"""
+    return crud.get_all_poi_in_area(db, lat, lon)
+
+
 @app.post("/journey/create")
 def create_journey(journey: JourneyUpload, db: Session = Depends(get_db)):
     """Do not supply a journey ID or a point ID when creating a journey.  The system will create these automatically"""
