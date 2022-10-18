@@ -129,3 +129,9 @@ def get_all_tracks(db: Session = Depends(get_db)):
 def get_tracks_in_area(lat: float, lon: float, db: Session = Depends(get_db)):
     """Returns a tracks within a point within a given area in a geoJSON format"""
     return crud.get_tracks_in_area(db, lat, lon)
+
+
+@app.get("/stats/tracks/ratings/")
+def get_track_ratings(db: Session = Depends(get_db)):
+    """List average ratings of tracks"""
+    return crud.get_track_ratings(db)

@@ -1,5 +1,5 @@
 from sqlalchemy.orm import Session
-from sqlalchemy import select
+from sqlalchemy import select, func
 
 from . import models
 from . import user, poidef, poiactual, journey, geojson
@@ -158,3 +158,11 @@ def get_all_poi_in_area(db, latitude: float, longitude: float):
         .filter(models.POI.latitude.between(latitude - 0.1, latitude + 0.1)) \
         .filter(models.POI.longitude.between(longitude - 0.1, longitude + 0.1)) \
         .all()
+
+
+def get_track_ratings(db):
+    return db.query(models.TrackName.track_name,
+                    func.avg(models.TrackRating.rating)
+                    ) \
+                    .join(models.TrackName) \
+                    .group_by(models.TrackName.track_name)
