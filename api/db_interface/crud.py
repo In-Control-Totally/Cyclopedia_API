@@ -166,3 +166,22 @@ def get_track_ratings(db):
                     ) \
                     .join(models.TrackName) \
                     .group_by(models.TrackName.track_name)
+
+
+def get_total_distance_travelled(db, user_id):
+    """User_id is mandatory.  it is supplied as an optional parameter at the API endpoint but passes a default 0"""
+    # Get every journey ID
+    journey_list = get_all_journeys(db)
+    # Loop over the journey IDs and get a list of journey objects
+    journey_objects = [get_journey_by_id(db, j_id) for j_id in journey_list]
+    # If the default value for the user_id is passed in, then get total distance of all journeys in the DB
+    distance = 0.0
+    # act_journey for individual journeys
+    for act_journey in journey_objects:
+        # If default value is passed, then sum all distances
+        if user_id == 0:
+            distance += act_journey.distance_travelled
+        # if an actual user_id is passed, then only sum their distance
+        elif user_id == act_journey.user.user_id:
+            distance += act_journey.distance_travelled
+    return distance

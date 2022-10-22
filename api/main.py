@@ -135,3 +135,9 @@ def get_tracks_in_area(lat: float, lon: float, db: Session = Depends(get_db)):
 def get_track_ratings(db: Session = Depends(get_db)):
     """List average ratings of tracks"""
     return crud.get_track_ratings(db)
+
+
+@app.get("/stats/distance/")
+def get_total_distance_travelled(user_id: int = 0, db: Session = Depends(get_db)):
+    """Get the total distance travelled.  Supply an optional user id to get the total travelled by an individual"""
+    return crud.get_total_distance_travelled(db, user_id)
