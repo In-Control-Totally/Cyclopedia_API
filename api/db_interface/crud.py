@@ -1,3 +1,5 @@
+from time import sleep
+import sqlalchemy.exc
 from sqlalchemy.orm import Session
 from sqlalchemy import select, func
 
@@ -55,7 +57,12 @@ def create_journey(db: Session, new_journey: journey.JourneyUpload):
                                     journey_end_time=new_journey.journey.journey_end_time,
                                     user_id=new_journey.journey.user_id
                                     )
-    db.add(journey_master)
+    # See the notes below for why this exists
+    try:
+        db.add(journey_master)
+    except sqlalchemy.exc.OperationalError:
+        sleep(0.2)
+        db.add(journey_master)
     db.commit()
     db.refresh(journey_master)
     for point in new_journey.points:
@@ -65,7 +72,15 @@ def create_journey(db: Session, new_journey: journey.JourneyUpload):
                                         timestamp=point.timestamp,
                                         altitude=point.altitude
                                         )
-        db.add(new_point)
+        # In the event of an OperationalError Exception, try again after 200ms.
+        # I think this is due to either the docker network or MySQL instance not being able to handle the
+        # rate at which python is sending the insert queries.
+        # Its a pretty big kludge, but it only has to work a little bit
+        try:
+            db.add(new_point)
+        except sqlalchemy.exc.OperationalError:
+            sleep(0.2)
+            db.add(new_point)
     db.commit()
     return journey_master
 
@@ -154,7 +169,7 @@ def get_tracks_in_area(db, latitude: float, longitude: float):
 
 
 def get_all_poi_in_area(db, latitude: float, longitude: float):
-    return db.query(models.POI)\
+    return db.query(models.POI) \
         .filter(models.POI.latitude.between(latitude - 0.1, latitude + 0.1)) \
         .filter(models.POI.longitude.between(longitude - 0.1, longitude + 0.1)) \
         .all()
@@ -164,8 +179,8 @@ def get_track_ratings(db):
     return db.query(models.TrackName.track_name,
                     func.avg(models.TrackRating.rating)
                     ) \
-                    .join(models.TrackName) \
-                    .group_by(models.TrackName.track_name)
+        .join(models.TrackName) \
+        .group_by(models.TrackName.track_name)
 
 
 def journey_objects_list(db):
@@ -214,5 +229,3 @@ def get_user_ranking_by_distance(db):
     return_list = list(users.values())
     return_list.sort(reverse=True)
     return return_list
-
-
