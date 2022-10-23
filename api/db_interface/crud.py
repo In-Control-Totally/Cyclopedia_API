@@ -168,12 +168,18 @@ def get_track_ratings(db):
                     .group_by(models.TrackName.track_name)
 
 
-def get_total_distance_travelled(db, user_id):
-    """User_id is mandatory.  it is supplied as an optional parameter at the API endpoint but passes a default 0"""
+def journey_objects_list(db):
+    """Returns a list of All journey objects"""
     # Get every journey ID
     journey_list = get_all_journeys(db)
     # Loop over the journey IDs and get a list of journey objects
-    journey_objects = [get_journey_by_id(db, j_id) for j_id in journey_list]
+    return [get_journey_by_id(db, j_id) for j_id in journey_list]
+
+
+def get_total_distance_travelled(db, user_id):
+    """User_id is mandatory.  it is supplied as an optional parameter at the API endpoint but passes a default 0"""
+    # Get every journey as a journey object
+    journey_objects = journey_objects_list(db)
     # If the default value for the user_id is passed in, then get total distance of all journeys in the DB
     distance = 0.0
     # act_journey for individual journeys
@@ -185,3 +191,28 @@ def get_total_distance_travelled(db, user_id):
         elif user_id == act_journey.user.user_id:
             distance += act_journey.distance_travelled
     return distance
+
+
+def get_user_ranking_by_distance(db):
+    # Users is a dictionary so we can access the object using the user_id as the key
+    users = {}
+    journey_objects = journey_objects_list(db)
+    # Only include journeys where the distance is more than 0
+    # for act_journey in filter(lambda x: (x.distance_travelled > 0), journey_objects):
+    for act_journey in filter(lambda x: (x.distance_travelled > 0), journey_objects):
+        # Make a new UserDistance object everytime and assign it a userID
+        act_journey_user = user.UserDistance()
+        act_journey_user.user_id = act_journey.user.user_id
+        # If the user does not exist, add it to the users dictionary
+        if act_journey.user.user_id not in users.keys():
+            act_journey_user.distance_travelled += act_journey.distance_travelled
+            users[act_journey.user.user_id] = act_journey_user
+        # If the user does exist in the users list, add more distance from this journey
+        else:
+            users[act_journey.user.user_id].distance_travelled += act_journey.distance_travelled
+    # Return the userDistance class objects sorted by descending order of distance travelled
+    return_list = list(users.values())
+    return_list.sort(reverse=True)
+    return return_list
+
+

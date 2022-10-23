@@ -141,3 +141,9 @@ def get_track_ratings(db: Session = Depends(get_db)):
 def get_total_distance_travelled(user_id: int = 0, db: Session = Depends(get_db)):
     """Get the total distance travelled.  Supply an optional user id to get the total travelled by an individual"""
     return crud.get_total_distance_travelled(db, user_id)
+
+
+@app.get("/stats/distanceranking")
+def user_ranking_by_distance(db: Session = Depends(get_db)):
+    """Return a list of User IDs in order of distance travelled and the distance"""
+    return crud.get_user_ranking_by_distance(db)
